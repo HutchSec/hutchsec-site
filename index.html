@@ -1,0 +1,918 @@
+<title>HutchSec</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --bg: #F6F7FA;
+    --surface: #FFFFFF;
+    --surface-2: #EEF1F6;
+    --text: #10151D;
+    --text-muted: #5B6577;
+    --border: #DFE3EA;
+    --accent: #2A4CFF;
+    --accent-strong: #1B34C4;
+    --accent-soft: #E8ECFF;
+    --accent-ink: #FFFFFF;
+    --sev-critical: #DC2626;
+    --sev-high: #C2410C;
+    --sev-medium: #A16207;
+    --sev-low: #4D7C0F;
+    --sev-info: #2563A8;
+    --shadow: 0 1px 2px rgba(16,21,29,0.04), 0 8px 24px -12px rgba(16,21,29,0.12);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0A0D13;
+      --surface: #12161F;
+      --surface-2: #171C27;
+      --text: #E8ECF4;
+      --text-muted: #8B94A8;
+      --border: #242B39;
+      --accent: #7086FF;
+      --accent-strong: #9AA9FF;
+      --accent-soft: #1A2242;
+      --accent-ink: #0A0D13;
+      --sev-critical: #F87171;
+      --sev-high: #FB923C;
+      --sev-medium: #FBBF24;
+      --sev-low: #A3E635;
+      --sev-info: #7DD3FC;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0A0D13;
+    --surface: #12161F;
+    --surface-2: #171C27;
+    --text: #E8ECF4;
+    --text-muted: #8B94A8;
+    --border: #242B39;
+    --accent: #7086FF;
+    --accent-strong: #9AA9FF;
+    --accent-soft: #1A2242;
+    --accent-ink: #0A0D13;
+    --sev-critical: #F87171;
+    --sev-high: #FB923C;
+    --sev-medium: #FBBF24;
+    --sev-low: #A3E635;
+    --sev-info: #7DD3FC;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Public Sans', ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .display {
+    font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0;
+    color: var(--text);
+  }
+  .mono {
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+  }
+  a { color: inherit; }
+  button { font-family: inherit; }
+  ::selection { background: var(--accent-soft); color: var(--accent-strong); }
+
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding-inline: 20px;
+  }
+  @media (max-width: 640px) {
+    .wrap { padding-inline: 16px; }
+  }
+
+  /* ---------- Nav ---------- */
+  header.site {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 14px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+  .brand-mark {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .brand-name {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 16.5px;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  nav.links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  nav.links button {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 14.5px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: color .15s, background .15s;
+  }
+  nav.links button:hover { color: var(--text); background: var(--surface-2); }
+  nav.links button[aria-current="page"] { color: var(--accent-strong); background: var(--accent-soft); }
+  .navbar-right { display: flex; align-items: center; gap: 10px; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 9px 16px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform .12s ease, background .15s, border-color .15s;
+    white-space: nowrap;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { background: var(--accent-strong); }
+  .btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+  .btn-ghost:hover { background: var(--surface-2); }
+  .btn-block { width: 100%; }
+  .btn:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .nav-toggle { display: none; }
+  @media (max-width: 800px) {
+    nav.links { display: none; }
+    .nav-toggle { display: inline-flex; }
+  }
+
+  /* mobile menu */
+  #mobileMenu {
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  #mobileMenu.open { display: flex; }
+  #mobileMenu button {
+    text-align: left;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 15px;
+    padding: 10px 8px;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+  #mobileMenu button[aria-current="page"] { color: var(--accent-strong); background: var(--accent-soft); }
+
+  /* ---------- Sections generic ---------- */
+  main { display: block; }
+  .page { padding-block: 56px 88px; }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    background: var(--accent-soft);
+    border-radius: 6px;
+    padding: 5px 10px;
+  }
+  .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-strong); }
+  .section-head { max-width: 640px; margin-bottom: 36px; }
+  .section-head h2 { font-size: clamp(24px, 3.2vw, 32px); margin-top: 12px; }
+  .section-head p { color: var(--text-muted); margin-top: 10px; font-size: 16px; }
+  section + section { border-top: 1px solid var(--border); }
+
+  /* ---------- Home hero ---------- */
+  .hero {
+    padding-block: 64px 48px;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 48px;
+    align-items: center;
+  }
+  @media (max-width: 860px) { .hero { grid-template-columns: 1fr; gap: 36px; } }
+  .hero h1 {
+    font-size: clamp(32px, 4.6vw, 50px);
+    line-height: 1.06;
+  }
+  .hero .lede {
+    margin-top: 18px;
+    font-size: 18px;
+    color: var(--text-muted);
+    max-width: 46ch;
+  }
+  .hero .accent-word { color: var(--accent-strong); }
+
+  form.subscribe {
+    margin-top: 26px;
+    display: flex;
+    gap: 8px;
+    max-width: 440px;
+  }
+  @media (max-width: 480px) { form.subscribe { flex-direction: column; } }
+  form.subscribe input[type="email"] {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 15px;
+    font-family: inherit;
+  }
+  form.subscribe input[type="email"]::placeholder { color: var(--text-muted); }
+  .fine-print { margin-top: 10px; font-size: 13px; color: var(--text-muted); }
+  .form-success {
+    margin-top: 14px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--sev-low);
+  }
+  .form-success.show { display: flex; }
+
+  /* terminal card */
+  .term {
+    background: #0D1117;
+    border: 1px solid #232A38;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+  }
+  .term-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    border-bottom: 1px solid #232A38;
+  }
+  .term-bar span { width: 10px; height: 10px; border-radius: 50%; display: block; }
+  .term-bar .r { background: #F87171; } .term-bar .y { background: #FBBF24; } .term-bar .g { background: #4ADE80; }
+  .term-title { margin-left: 6px; color: #7A8494; font-size: 12px; }
+  .term-body { padding: 16px 18px; color: #C7D0DF; line-height: 1.75; }
+  .term-body .p { color: #4ADE80; }
+  .term-body .c { color: #7A8494; }
+  .term-body .o { color: #E8ECF4; }
+  .term-body .hl { color: #F87171; }
+  .term-cursor { display: inline-block; width: 7px; height: 14px; background: #4ADE80; vertical-align: -2px; animation: blink 1.1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .term-cursor { animation: none; } }
+
+  /* stats */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  @media (max-width: 700px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat {
+    background: var(--surface);
+    padding: 22px 20px;
+  }
+  .stat .num {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .label { margin-top: 4px; font-size: 13px; color: var(--text-muted); }
+
+  /* cards grid */
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  @media (max-width: 860px) { .grid-3 { grid-template-columns: 1fr; } .grid-2 { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* issue card */
+  .issue-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .issue-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+  .issue-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .issue-id { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--text-muted); }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 3px 8px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .issue-card h3 { font-size: 18px; line-height: 1.3; }
+  .issue-card p { margin: 0; color: var(--text-muted); font-size: 14.5px; }
+  .issue-meta { margin-top: 4px; font-size: 13px; color: var(--text-muted); display: flex; gap: 10px; align-items: center; }
+
+  /* filter chips */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 7px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+  /* about */
+  .about-grid { display: grid; grid-template-columns: 220px 1fr; gap: 44px; }
+  @media (max-width: 760px) { .about-grid { grid-template-columns: 1fr; } }
+  .avatar {
+    width: 168px; height: 168px;
+    border-radius: 16px;
+    background: linear-gradient(155deg, var(--accent) 0%, #0D1830 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 44px;
+    color: #fff;
+    box-shadow: var(--shadow);
+  }
+  .cred-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .cred {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 9px;
+    border-radius: 6px;
+    background: var(--surface-2);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .timeline { margin-top: 8px; display: flex; flex-direction: column; }
+  .tl-item { display: grid; grid-template-columns: 92px 1fr; gap: 18px; padding-block: 16px; border-top: 1px solid var(--border); }
+  .tl-item:first-child { border-top: none; }
+  .tl-year { font-family: 'IBM Plex Mono', monospace; color: var(--text-muted); font-size: 13.5px; padding-top: 2px; }
+  .tl-body h4 { margin: 0 0 4px; font-size: 15.5px; font-family: 'Manrope', sans-serif; font-weight: 700; }
+  .tl-body p { margin: 0; color: var(--text-muted); font-size: 14.5px; }
+
+  /* services */
+  .svc-card { position: relative; }
+  .svc-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--accent-strong);
+    background: var(--accent-soft);
+    border-radius: 6px;
+    padding: 3px 8px;
+    align-self: flex-start;
+  }
+  .svc-card h3 { font-size: 19px; margin-top: 2px; }
+  .svc-card ul { margin: 4px 0 0; padding-left: 18px; color: var(--text-muted); font-size: 14.5px; display: flex; flex-direction: column; gap: 5px; }
+  .svc-foot { margin-top: auto; padding-top: 10px; font-size: 13px; color: var(--text-muted); display: flex; justify-content: space-between; border-top: 1px dashed var(--border); }
+
+  /* contact */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  @media (max-width: 800px) { .contact-grid { grid-template-columns: 1fr; } }
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .field label { font-size: 13.5px; font-weight: 600; color: var(--text-muted); }
+  .field input, .field textarea, .field select {
+    padding: 11px 13px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 15px;
+    resize: vertical;
+  }
+  .contact-info { display: flex; flex-direction: column; gap: 18px; }
+  .info-row { display: flex; gap: 12px; align-items: flex-start; }
+  .info-icon {
+    width: 34px; height: 34px; flex-shrink: 0; border-radius: 8px;
+    background: var(--accent-soft); color: var(--accent-strong);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 700;
+  }
+  .info-row h4 { font-size: 14.5px; font-family: 'Manrope', sans-serif; font-weight: 700; margin: 0 0 2px; }
+  .info-row p, .info-row a { margin: 0; color: var(--text-muted); font-size: 14.5px; text-decoration: none; }
+  .info-row a:hover { color: var(--accent-strong); }
+
+  footer.site {
+    border-top: 1px solid var(--border);
+    padding-block: 28px;
+    margin-top: 8px;
+  }
+  .foot-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .foot-row p { margin: 0; font-size: 13.5px; color: var(--text-muted); }
+  .foot-links { display: flex; gap: 18px; }
+  .foot-links a { font-size: 13.5px; color: var(--text-muted); text-decoration: none; }
+  .foot-links a:hover { color: var(--accent-strong); }
+
+  [hidden] { display: none !important; }
+</style>
+
+<header class="site">
+  <div class="wrap navbar">
+    <button class="brand" data-nav="home" aria-label="HutchSec — home">
+      <span class="brand-mark mono">&gt;_</span>
+      <span class="brand-name">HutchSec</span>
+    </button>
+    <nav class="links" id="navLinks" aria-label="Primary">
+      <button data-nav="home">Home</button>
+      <button data-nav="newsletter">Newsletter</button>
+      <button data-nav="about">About</button>
+      <button data-nav="services">Services</button>
+      <button data-nav="contact">Contact</button>
+    </nav>
+    <div class="navbar-right">
+      <button class="btn btn-ghost nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">Menu</button>
+      <button class="btn btn-primary" data-nav="newsletter" style="display:none" id="subBtnDesktop">Subscribe</button>
+    </div>
+  </div>
+  <div id="mobileMenu" aria-label="Mobile">
+    <button data-nav="home">Home</button>
+    <button data-nav="newsletter">Newsletter</button>
+    <button data-nav="about">About</button>
+    <button data-nav="services">Services</button>
+    <button data-nav="contact">Contact</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= HOME ================= -->
+  <section class="page" id="page-home">
+    <div class="wrap hero">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>Cyber Short — Issue CS-047 out now</span>
+        <h1>Know what attackers know<span class="accent-word">,</span> before they use it on you.</h1>
+        <p class="lede">Cyber Short is a free weekly newsletter written by a working penetration tester — real findings from real engagements, translated into thirty-second, no-fluff defensive takeaways.</p>
+        <form class="subscribe" id="homeSubForm">
+          <label for="homeEmail" class="sr-only" style="position:absolute;left:-9999px;">Email address</label>
+          <input type="email" id="homeEmail" placeholder="you@company.com" required autocomplete="email">
+          <button type="submit" class="btn btn-primary">Subscribe free</button>
+        </form>
+        <p class="form-success" id="homeSubSuccess">✓ You're on the list — first issue lands next Tuesday.</p>
+        <p class="fine-print">Every Tuesday. 6,200+ security & IT folks read it. Unsubscribe anytime.</p>
+      </div>
+      <div class="term" aria-hidden="true">
+        <div class="term-bar"><span class="r"></span><span class="y"></span><span class="g"></span><span class="term-title">engagement-log.sh</span></div>
+        <div class="term-body">
+<div><span class="p">$</span> <span class="o">nmap -sV -p- target.internal</span></div>
+<div><span class="c">Discovered open port 445/tcp (smb)</span></div>
+<div><span class="c">Discovered open port 5985/tcp (winrm)</span></div>
+<div><span class="p">$</span> <span class="o">crackmapexec smb 10.10.4.0/24 -u guest -p ''</span></div>
+<div><span class="hl">[+] Null session accepted on 6 hosts</span></div>
+<div><span class="p">$</span> <span class="o">bloodhound-python -c All -u svc_backup</span></div>
+<div><span class="hl">[+] Path to Domain Admin found — 3 hops</span></div>
+<div><span class="p">$</span> <span class="o">echo "this week's issue: writing it up" <span class="term-cursor"></span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="stats">
+        <div class="stat"><div class="num mono">6,200+</div><div class="label">Newsletter subscribers</div></div>
+        <div class="stat"><div class="num mono">47</div><div class="label">Issues published</div></div>
+        <div class="stat"><div class="num mono">180+</div><div class="label">Engagements delivered</div></div>
+        <div class="stat"><div class="num mono">10 yrs</div><div class="label">In offensive security</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap page" style="padding-top:64px;">
+      <div class="section-head">
+        <span class="eyebrow">Why Cyber Short</span>
+        <h2>Built from engagements, not press releases.</h2>
+        <p>No syndicated headlines, no vendor rewrites. Every issue starts from something found on a live assessment this month, then gets stripped down to what a defender can actually act on.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <span class="tag" style="border-color:var(--sev-info); color:var(--sev-info);">FIELD-TESTED</span>
+          <h3 style="font-size:17px;">Straight from the shell</h3>
+          <p style="color:var(--text-muted); font-size:14.5px;">Techniques and misconfigs pulled directly from that week's client work — anonymized, never theoretical.</p>
+        </div>
+        <div class="card">
+          <span class="tag" style="border-color:var(--sev-medium); color:var(--sev-medium);">2-MIN READ</span>
+          <h3 style="font-size:17px;">Respect for your inbox</h3>
+          <p style="color:var(--text-muted); font-size:14.5px;">One finding, one root cause, one fix. No 4,000-word listicles between you and the point.</p>
+        </div>
+        <div class="card">
+          <span class="tag" style="border-color:var(--sev-low); color:var(--sev-low);">DEFENDER-FIRST</span>
+          <h3 style="font-size:17px;">Written to be used</h3>
+          <p style="color:var(--text-muted); font-size:14.5px;">Each issue ends with concrete detection or hardening steps — not just "patch immediately."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap page">
+      <div class="section-head" style="display:flex; align-items:flex-end; justify-content:space-between; gap:16px; max-width:none;">
+        <div>
+          <span class="eyebrow">Latest issues</span>
+          <h2 style="margin-top:12px;">Recent dispatches</h2>
+        </div>
+        <button class="btn btn-ghost" data-nav="newsletter">View full archive →</button>
+      </div>
+      <div class="grid-3" id="homeIssues"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap page">
+      <div class="section-head">
+        <span class="eyebrow">Services</span>
+        <h2>Need more than a newsletter?</h2>
+        <p>HutchSec also runs hands-on offensive security engagements — from a single web app to a full red team objective.</p>
+      </div>
+      <div class="grid-3" id="homeServices"></div>
+      <div style="margin-top:28px;">
+        <button class="btn btn-primary" data-nav="contact">Scope an engagement</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= NEWSLETTER ================= -->
+  <section class="page" id="page-newsletter" hidden>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Archive</span>
+        <h2>Every issue of Cyber Short.</h2>
+        <p>47 issues and counting, filed by topic. Pick a thread and start reading — or subscribe to get the next one in your inbox.</p>
+      </div>
+      <div class="chips" id="tagChips"></div>
+      <div class="grid-3" id="archiveGrid"></div>
+
+      <div class="card" style="margin-top:40px; flex-direction:row; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
+        <div>
+          <h3 style="font-size:18px;">Don't wait for the archive to catch up</h3>
+          <p style="color:var(--text-muted); font-size:14.5px; margin-top:4px;">New issue every Tuesday morning.</p>
+        </div>
+        <form class="subscribe" id="archiveSubForm" style="margin-top:0;">
+          <input type="email" id="archiveEmail" placeholder="you@company.com" required autocomplete="email">
+          <button type="submit" class="btn btn-primary">Subscribe</button>
+        </form>
+      </div>
+      <p class="form-success" id="archiveSubSuccess" style="justify-content:flex-end;">✓ Subscribed — welcome aboard.</p>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section class="page" id="page-about" hidden>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">About</span>
+        <h2>Hi, I'm Nick.</h2>
+      </div>
+      <div class="about-grid">
+        <div>
+          <div class="avatar mono">N</div>
+          <div class="cred-row">
+            <span class="cred">OSCP</span>
+            <span class="cred">OSCE³</span>
+            <span class="cred">CRTO</span>
+            <span class="cred">CISSP</span>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:17px; color:var(--text-muted); max-width:64ch;">I'm a penetration tester and the founder of HutchSec. I spend most weeks breaking into networks, web apps, and cloud environments on purpose — with permission — so the people who own them can fix what I find before someone without permission does.</p>
+          <p style="font-size:17px; color:var(--text-muted); max-width:64ch; margin-top:14px;">I started <em>Cyber Short</em> because most security news is either recycled vendor marketing or written for people who already have a SOC on retainer. This is the newsletter I wanted when I was the only IT person at a 40-person company trying to figure out what actually mattered.</p>
+
+          <h3 style="font-size:16px; margin-top:36px; margin-bottom:14px;">A rough timeline</h3>
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-year mono">2015</div>
+              <div class="tl-body"><h4>Started in sysadmin & network engineering</h4><p>Ran infrastructure for a regional MSP — the fastest way to learn what breaks in production.</p></div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-year mono">2018</div>
+              <div class="tl-body"><h4>Moved into offensive security</h4><p>Junior pentester, then lead, at a boutique consultancy focused on mid-market clients.</p></div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-year mono">2021</div>
+              <div class="tl-body"><h4>Started leading red team engagements</h4><p>Objective-based assessments spanning phishing, AD, and cloud attack paths.</p></div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-year mono">2023</div>
+              <div class="tl-body"><h4>Founded HutchSec</h4><p>Independent pentest practice — and started writing Cyber Short as a weekly habit.</p></div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-year mono">Today</div>
+              <div class="tl-body"><h4>180+ engagements, 6,200+ subscribers</h4><p>Still doing the work myself — no bait-and-switch to a junior team after the sales call.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SERVICES ================= -->
+  <section class="page" id="page-services" hidden>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Services</span>
+        <h2>Offensive security engagements.</h2>
+        <p>Scoped, hands-on testing — delivered by the same person who tests it, writes it up, and walks your team through the findings.</p>
+      </div>
+      <div class="grid-3" id="servicesGrid"></div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
+  <section class="page" id="page-contact" hidden>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Contact</span>
+        <h2>Let's scope the work.</h2>
+        <p>Tell me a bit about what you need tested and I'll reply with next steps — usually within one business day.</p>
+      </div>
+      <div class="contact-grid">
+        <form id="contactForm">
+          <div class="field">
+            <label for="cName">Name</label>
+            <input type="text" id="cName" required>
+          </div>
+          <div class="field">
+            <label for="cEmail">Work email</label>
+            <input type="email" id="cEmail" required>
+          </div>
+          <div class="field">
+            <label for="cService">What do you need tested?</label>
+            <select id="cService">
+              <option>Web application penetration test</option>
+              <option>Network / infrastructure penetration test</option>
+              <option>Cloud security assessment</option>
+              <option>Social engineering / phishing simulation</option>
+              <option>Red team engagement</option>
+              <option>Not sure yet</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cMessage">Details</label>
+            <textarea id="cMessage" rows="5" placeholder="Rough scope, timeline, or anything else useful."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Send message</button>
+          <p class="form-success" id="contactSuccess">✓ Sent — I'll reply within one business day.</p>
+        </form>
+
+        <div class="contact-info">
+          <div class="info-row">
+            <div class="info-icon">@</div>
+            <div><h4>Email</h4><a href="mailto:nick@hutchsec.com">nick@hutchsec.com</a></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon mono">CS</div>
+            <div><h4>Read the newsletter first</h4><p><button data-nav="newsletter" style="background:none;border:none;padding:0;color:var(--accent-strong);cursor:pointer;font:inherit;text-decoration:underline;">Browse the Cyber Short archive</button> to get a feel for how I write engagements up.</p></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon">⏱</div>
+            <div><h4>Typical response time</h4><p>Within 1 business day, Mon–Fri.</p></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon">🔒</div>
+            <div><h4>NDA-first</h4><p>Happy to sign your NDA before any scoping details are shared.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap foot-row">
+    <p class="mono">&gt;_ hutchsec — © 2026 Nick, HutchSec. All rights reserved.</p>
+    <div class="foot-links">
+      <a href="mailto:nick@hutchsec.com">nick@hutchsec.com</a>
+      <button data-nav="newsletter" style="background:none;border:none;padding:0;color:var(--text-muted);cursor:pointer;font:inherit;">Newsletter</button>
+      <button data-nav="contact" style="background:none;border:none;padding:0;color:var(--text-muted);cursor:pointer;font:inherit;">Contact</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var ISSUES = [
+    { id: "CS-047", tag: "Cloud", sev: "info", date: "Sep 9, 2026", title: "Initial Access via Leaked Service Principal Secrets in CI/CD Pipelines", excerpt: "A build log misconfiguration keeps handing out cloud credentials in plaintext — here's where to look in your own pipelines this week." },
+    { id: "CS-046", tag: "Social Engineering", sev: "medium", date: "Sep 2, 2026", title: "Why Your MFA Still Falls to Adversary-in-the-Middle Phishing Kits", excerpt: "Push MFA isn't dead, but AiTM proxy kits make it look that way. What actually stops the session-token theft." },
+    { id: "CS-045", tag: "Vuln Roundup", sev: "high", date: "Aug 26, 2026", title: "Parsing the Latest Ivanti Advisory: What Actually Needs Patching This Week", excerpt: "Cutting through the CVSS noise to the two CVEs your team should prioritize before Friday." },
+    { id: "CS-044", tag: "Red Team", sev: "medium", date: "Aug 19, 2026", title: "Living Off the Land: LOLBins Defenders Keep Missing", excerpt: "Three binaries already on every Windows box that keep getting red teams past EDR — and the detections that catch them." },
+    { id: "CS-043", tag: "Web AppSec", sev: "high", date: "Aug 12, 2026", title: "Broken Object Level Authorization Is Still Eating APIs Alive", excerpt: "BOLA remains the most common finding on every API assessment I run. Here's the five-minute test you can run yourself." },
+    { id: "CS-042", tag: "Network", sev: "critical", date: "Aug 5, 2026", title: "Field Notes on Segmenting Flat Networks (Or: Domain Admin in 40 Minutes)", excerpt: "A walkthrough of a real internal pentest, from null session to Domain Admin, and the three segmentation gaps that let it happen." },
+    { id: "CS-041", tag: "Cloud", sev: "medium", date: "Jul 29, 2026", title: "S3 Bucket Policies Are Still the Number One Cloud Misconfig", excerpt: "A quick script to audit your own buckets for the exact policy mistake I find on nearly every cloud assessment." },
+    { id: "CS-040", tag: "Web AppSec", sev: "low", date: "Jul 22, 2026", title: "GraphQL Introspection Left On in Production, Again", excerpt: "Why disabling introspection isn't enough on its own, and what real schema hardening looks like." },
+    { id: "CS-039", tag: "Vuln Roundup", sev: "critical", date: "Jul 15, 2026", title: "This Month's Critical CVEs, Ranked by Actual Exploitability", excerpt: "Not every 9.8 is equally urgent. A practical priority order for patch Tuesday and beyond." }
+  ];
+
+  var SEV_LABEL = { critical: "Critical", high: "High", medium: "Medium", low: "Low", info: "Info" };
+
+  var SERVICES = [
+    { num: "01", name: "Web Application Penetration Testing", desc: "OWASP Top 10 coverage plus business-logic and authorization testing across REST and GraphQL APIs.", scope: ["Auth & session handling", "Access control (IDOR/BOLA)", "Input validation & injection", "API-specific abuse cases"], length: "5–10 business days" },
+    { num: "02", name: "Network & Infrastructure Testing", desc: "Internal and external assessments, including Active Directory attack path mapping and segmentation validation.", scope: ["External perimeter testing", "Internal AD attack paths", "Segmentation & VLAN checks", "Legacy protocol abuse"], length: "5–10 business days" },
+    { num: "03", name: "Cloud Security Assessment", desc: "Configuration review and privilege-escalation path mapping across AWS, Azure, and GCP.", scope: ["IAM privilege escalation", "Storage & data exposure", "Misconfigured services", "CI/CD pipeline review"], length: "5–8 business days" },
+    { num: "04", name: "Social Engineering & Phishing", desc: "Pretext-driven phishing, vishing, and physical/badge-access simulations tailored to your org.", scope: ["Email phishing campaigns", "Vishing (phone pretexting)", "Physical/badge access tests", "Awareness reporting"], length: "2–4 weeks" },
+    { num: "05", name: "Red Team Engagements", desc: "Objective-based, multi-stage assessments that test people, process, and detection together.", scope: ["Defined adversarial objective", "Multi-vector initial access", "Detection & response testing", "Executive + technical debrief"], length: "3–6 weeks" }
+  ];
+
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; }
+  function sevColor(sev) { return "var(--sev-" + sev + ")"; }
+
+  function issueCard(issue) {
+    var card = el("div", "issue-card");
+    var top = el("div", "issue-top");
+    top.appendChild(el("span", "issue-id mono", issue.id));
+    var tag = el("span", "tag", issue.tag);
+    tag.style.borderColor = sevColor(issue.sev);
+    tag.style.color = sevColor(issue.sev);
+    top.appendChild(tag);
+    card.appendChild(top);
+    card.appendChild(el("h3", "", issue.title));
+    card.appendChild(el("p", "", issue.excerpt));
+    var meta = el("div", "issue-meta");
+    meta.appendChild(el("span", "", issue.date));
+    meta.appendChild(el("span", "", "·"));
+    meta.appendChild(el("span", "", SEV_LABEL[issue.sev] + " priority"));
+    card.appendChild(meta);
+    return card;
+  }
+
+  function svcCard(s) {
+    var card = el("div", "card svc-card");
+    card.appendChild(el("span", "svc-num mono", s.num));
+    card.appendChild(el("h3", "", s.name));
+    card.appendChild(el("p", "", s.desc));
+    var ul = el("ul");
+    s.scope.forEach(function(item){ ul.appendChild(el("li", "", item)); });
+    card.appendChild(ul);
+    var foot = el("div", "svc-foot");
+    foot.appendChild(el("span", "", "Typical length"));
+    foot.appendChild(el("span", "mono", s.length));
+    card.appendChild(foot);
+    return card;
+  }
+
+  // Home: latest 3 issues + services teaser
+  var homeIssues = document.getElementById("homeIssues");
+  ISSUES.slice(0, 3).forEach(function(i){ homeIssues.appendChild(issueCard(i)); });
+  var homeServices = document.getElementById("homeServices");
+  SERVICES.slice(0, 3).forEach(function(s){ homeServices.appendChild(svcCard(s)); });
+
+  // Services page: all
+  var servicesGrid = document.getElementById("servicesGrid");
+  SERVICES.forEach(function(s){ servicesGrid.appendChild(svcCard(s)); });
+
+  // Archive page: chips + grid
+  var TAGS = ["All"].concat(Array.from(new Set(ISSUES.map(function(i){ return i.tag; }))));
+  var chipsEl = document.getElementById("tagChips");
+  var archiveGrid = document.getElementById("archiveGrid");
+  var activeTag = "All";
+
+  function renderArchive() {
+    archiveGrid.innerHTML = "";
+    ISSUES.filter(function(i){ return activeTag === "All" || i.tag === activeTag; })
+      .forEach(function(i){ archiveGrid.appendChild(issueCard(i)); });
+  }
+
+  TAGS.forEach(function(tag){
+    var chip = el("button", "chip", tag);
+    chip.setAttribute("aria-pressed", tag === "All" ? "true" : "false");
+    chip.addEventListener("click", function(){
+      activeTag = tag;
+      Array.from(chipsEl.children).forEach(function(c){ c.setAttribute("aria-pressed", c.textContent === tag ? "true" : "false"); });
+      renderArchive();
+    });
+    chipsEl.appendChild(chip);
+  });
+  renderArchive();
+
+  // ---------- Routing ----------
+  var PAGES = ["home", "newsletter", "about", "services", "contact"];
+  function navigate(page) {
+    if (PAGES.indexOf(page) === -1) page = "home";
+    PAGES.forEach(function(p){
+      var sec = document.getElementById("page-" + p);
+      if (sec) sec.hidden = (p !== page);
+    });
+    document.querySelectorAll("[data-nav]").forEach(function(btn){
+      if (btn.dataset.nav === page) btn.setAttribute("aria-current", "page");
+      else btn.removeAttribute("aria-current");
+    });
+    document.getElementById("mobileMenu").classList.remove("open");
+    document.getElementById("navToggle").setAttribute("aria-expanded", "false");
+    if (location.hash !== "#" + page) history.pushState(null, "", "#" + page);
+    window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+  }
+
+  document.querySelectorAll("[data-nav]").forEach(function(btn){
+    btn.addEventListener("click", function(){ navigate(btn.dataset.nav); });
+  });
+  window.addEventListener("popstate", function(){ navigate(location.hash.replace("#", "") || "home"); });
+  document.getElementById("navToggle").addEventListener("click", function(){
+    var menu = document.getElementById("mobileMenu");
+    var open = menu.classList.toggle("open");
+    this.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+
+  navigate(location.hash.replace("#", "") || "home");
+
+  // ---------- Forms (client-side only demo) ----------
+  function wireSubscribe(formId, successId) {
+    var form = document.getElementById(formId);
+    if (!form) return;
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      document.getElementById(successId).classList.add("show");
+      form.reset();
+    });
+  }
+  wireSubscribe("homeSubForm", "homeSubSuccess");
+  wireSubscribe("archiveSubForm", "archiveSubSuccess");
+
+  var contactForm = document.getElementById("contactForm");
+  contactForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    document.getElementById("contactSuccess").classList.add("show");
+    contactForm.reset();
+  });
+})();
+</script>
