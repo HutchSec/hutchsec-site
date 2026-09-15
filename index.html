@@ -532,14 +532,14 @@
       <div>
         <span class="eyebrow"><span class="dot"></span>Cyber Short — Issue CS-047 out now</span>
         <h1>Know what attackers know<span class="accent-word">,</span> before they use it on you.</h1>
-        <p class="lede">Cyber Short is a free weekly newsletter written by a working penetration tester — real findings from real engagements, translated into thirty-second, no-fluff defensive takeaways.</p>
+        <p class="lede">Cyber Short is a free weekly newsletter written by a working penetration tester — top cyber articles from weekly threat intelligence, defensive takeaways.</p>
         <form class="subscribe" id="homeSubForm">
           <label for="homeEmail" class="sr-only" style="position:absolute;left:-9999px;">Email address</label>
           <input type="email" id="homeEmail" placeholder="you@company.com" required autocomplete="email">
           <button type="submit" class="btn btn-primary">Subscribe free</button>
         </form>
         <p class="form-success" id="homeSubSuccess">✓ You're on the list — first issue lands next Tuesday.</p>
-        <p class="fine-print">Every Tuesday. 6,200+ security & IT folks read it. Unsubscribe anytime.</p>
+        <p class="fine-print">Every Tuesday. Regular users and security IT folks read it. Unsubscribe anytime.</p>
       </div>
       <div class="term" aria-hidden="true">
         <div class="term-bar"><span class="r"></span><span class="y"></span><span class="g"></span><span class="term-title">engagement-log.sh</span></div>
@@ -547,9 +547,9 @@
 <div><span class="p">$</span> <span class="o">nmap -sV -p- target.internal</span></div>
 <div><span class="c">Discovered open port 445/tcp (smb)</span></div>
 <div><span class="c">Discovered open port 5985/tcp (winrm)</span></div>
-<div><span class="p">$</span> <span class="o">crackmapexec smb 10.10.4.0/24 -u guest -p ''</span></div>
+<div><span class="p">$</span> <span class="o">nxc smb 10.10.4.0/24 -u guest -p ''</span></div>
 <div><span class="hl">[+] Null session accepted on 6 hosts</span></div>
-<div><span class="p">$</span> <span class="o">bloodhound-python -c All -u svc_backup</span></div>
+<div><span class="p">$</span> <span class="o">bloodhound-ce-python -c All -u svc_backup</span></div>
 <div><span class="hl">[+] Path to Domain Admin found — 3 hops</span></div>
 <div><span class="p">$</span> <span class="o">echo "this week's issue: writing it up" <span class="term-cursor"></span></span></div>
         </div>
@@ -577,7 +577,7 @@
         <div class="card">
           <span class="tag" style="border-color:var(--sev-info); color:var(--sev-info);">FIELD-TESTED</span>
           <h3 style="font-size:17px;">Straight from the shell</h3>
-          <p style="color:var(--text-muted); font-size:14.5px;">Techniques and misconfigs pulled directly from that week's client work — anonymized, never theoretical.</p>
+          <p style="color:var(--text-muted); font-size:14.5px;">Techniques and misconfigs pulled directly from that week's threat intelligence.</p>
         </div>
         <div class="card">
           <span class="tag" style="border-color:var(--sev-medium); color:var(--sev-medium);">2-MIN READ</span>
