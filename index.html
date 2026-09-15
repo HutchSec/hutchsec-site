@@ -1,3 +1,8 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HutchSec</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
@@ -496,6 +501,9 @@
 
   [hidden] { display: none !important; }
 </style>
+</head>
+<body>
+
 
 <header class="site">
   <div class="wrap navbar">
@@ -532,14 +540,14 @@
       <div>
         <span class="eyebrow"><span class="dot"></span>Cyber Short — Issue CS-047 out now</span>
         <h1>Know what attackers know<span class="accent-word">,</span> before they use it on you.</h1>
-        <p class="lede">Cyber Short is a free weekly newsletter written by a working penetration tester — top cyber articles from weekly threat intelligence, defensive takeaways.</p>
+        <p class="lede">Cyber Short is a free weekly roundup of the 3–4 best security articles I come across while staying current as a working penetration tester — no fluff, just what's actually worth reading.</p>
         <form class="subscribe" id="homeSubForm">
           <label for="homeEmail" class="sr-only" style="position:absolute;left:-9999px;">Email address</label>
           <input type="email" id="homeEmail" placeholder="you@company.com" required autocomplete="email">
           <button type="submit" class="btn btn-primary">Subscribe free</button>
         </form>
         <p class="form-success" id="homeSubSuccess">✓ You're on the list — first issue lands next Tuesday.</p>
-        <p class="fine-print">Every Tuesday. Regular users and security IT folks read it. Unsubscribe anytime.</p>
+        <p class="fine-print">Every Tuesday. Read by security and IT folks who'd rather not miss the important stuff. Unsubscribe anytime.</p>
       </div>
       <div class="term" aria-hidden="true">
         <div class="term-bar"><span class="r"></span><span class="y"></span><span class="g"></span><span class="term-title">engagement-log.sh</span></div>
@@ -547,9 +555,9 @@
 <div><span class="p">$</span> <span class="o">nmap -sV -p- target.internal</span></div>
 <div><span class="c">Discovered open port 445/tcp (smb)</span></div>
 <div><span class="c">Discovered open port 5985/tcp (winrm)</span></div>
-<div><span class="p">$</span> <span class="o">nxc smb 10.10.4.0/24 -u guest -p ''</span></div>
+<div><span class="p">$</span> <span class="o">crackmapexec smb 10.10.4.0/24 -u guest -p ''</span></div>
 <div><span class="hl">[+] Null session accepted on 6 hosts</span></div>
-<div><span class="p">$</span> <span class="o">bloodhound-ce-python -c All -u svc_backup</span></div>
+<div><span class="p">$</span> <span class="o">bloodhound-python -c All -u svc_backup</span></div>
 <div><span class="hl">[+] Path to Domain Admin found — 3 hops</span></div>
 <div><span class="p">$</span> <span class="o">echo "this week's issue: writing it up" <span class="term-cursor"></span></span></div>
         </div>
@@ -570,24 +578,24 @@
     <div class="wrap page" style="padding-top:64px;">
       <div class="section-head">
         <span class="eyebrow">Why Cyber Short</span>
-        <h2>Custom selection of the top cyber stores.</h2>
-        <p>Gives you the ability to get the most important updates witout taking too much of your time</p>
+        <h2>The signal, not the noise.</h2>
+        <p>No aggregated feeds, no vendor rewrites. Every issue is the 3–4 articles I actually stopped and read this week while staying current as a working penetration tester — picked, not scraped.</p>
       </div>
       <div class="grid-3">
         <div class="card">
-          <span class="tag" style="border-color:var(--sev-info); color:var(--sev-info);">FIELD-TESTED</span>
-          <h3 style="font-size:17px;">Straight from the shell</h3>
-          <p style="color:var(--text-muted); font-size:14.5px;">Techniques and misconfigs pulled directly from that week's threat intelligence.</p>
+          <span class="tag" style="border-color:var(--sev-info); color:var(--sev-info);">PRACTITIONER-VETTED</span>
+          <h3 style="font-size:17px;">Picked by someone in the field</h3>
+          <p style="color:var(--text-muted); font-size:14.5px;">Every link is something I read myself this week while doing the job — not pulled from an RSS dump.</p>
         </div>
         <div class="card">
-          <span class="tag" style="border-color:var(--sev-medium); color:var(--sev-medium);">2-MIN READ</span>
+          <span class="tag" style="border-color:var(--sev-medium); color:var(--sev-medium);">5-MIN READ</span>
           <h3 style="font-size:17px;">Respect for your inbox</h3>
-          <p style="color:var(--text-muted); font-size:14.5px;">One finding, one root cause, one fix. No 4,000-word listicles between you and the point.</p>
+          <p style="color:var(--text-muted); font-size:14.5px;">Just the 3–4 articles worth your time. No 4,000-word roundups between you and the links.</p>
         </div>
         <div class="card">
-          <span class="tag" style="border-color:var(--sev-low); color:var(--sev-low);">DEFENDER-FIRST</span>
-          <h3 style="font-size:17px;">Written to be used</h3>
-          <p style="color:var(--text-muted); font-size:14.5px;">Each issue ends with concrete detection or hardening steps — not just "patch immediately."</p>
+          <span class="tag" style="border-color:var(--sev-low); color:var(--sev-low);">WITH CONTEXT</span>
+          <h3 style="font-size:17px;">Why it matters, not just what it is</h3>
+          <p style="color:var(--text-muted); font-size:14.5px;">Each link comes with a line on why it's worth reading and what to actually do with it — not just a headline dump.</p>
         </div>
       </div>
     </div>
@@ -924,3 +932,6 @@
   });
 })();
 </script>
+
+</body>
+</html>
